@@ -17,6 +17,7 @@ const logger = new Logger('Main-Gateway');
       forbidNonWhitelisted: true,
     }),
   );
+  
   app.useGlobalFilters(new RpcCustomExceptionFilter());
   await app.listen(envs.port);
 

@@ -6,30 +6,39 @@ import * as joi from 'joi';
 //valida que el puerto sea un numero
 interface EnvVars{
     PORT: number;
-    PRODUCTS_MICROSERVICE_PORT: number;
-    PRODUCTS_MICROSERVICE_HOST: string;
+    // NATS_SERVERS: string[];
 
-    ORDERS_MICROSERVICE_PORT: number; 
+    PRODUCTS_MICROSERVICE_HOST: string;
+    PRODUCTS_MICROSERVICE_PORT: number;
+  
     ORDERS_MICROSERVICE_HOST: string;
+    ORDERS_MICROSERVICE_PORT: number;
 }
 
 // El puerto tiene que ser obligatorio
 
 const envSchema = joi.object({
 
-    //valida el tipo de dato de cada variable global
-    PORT: joi.number().required(),  
-    PRODUCTS_MICROSERVICE_PORT: joi.number().required(),
+    PORT: joi.number().required(),
+
+    // NATS_SERVERS: joi.array().items( joi.string() ).required(),
+
     PRODUCTS_MICROSERVICE_HOST: joi.string().required(),
-
-    ORDERS_MICROSERVICE_PORT: joi.number().required(),
+    PRODUCTS_MICROSERVICE_PORT: joi.number().required(),
+  
     ORDERS_MICROSERVICE_HOST: joi.string().required(),
-
+    ORDERS_MICROSERVICE_PORT: joi.number().required(),
 })
 .unknown(true);
 
 // desestructura esas variables del .env
+// const { error, value } = envSchema.validate( {
+//     ...process.env,
+//     NATS_SERVERS: process.env.NATS_SERVERS?.split(',')
+// });
+
 const { error, value } = envSchema.validate( process.env );
+
 
 //creacion del mensaje de error
 if(error){
@@ -39,12 +48,16 @@ if(error){
 //cambia tipo de dato de any a number
 const envVars: EnvVars = value;
 
+//variables globales del puerto y db
 export const envs ={
     port: envVars.PORT,
 
-    productsMicroservicesHost: envVars.PRODUCTS_MICROSERVICE_HOST,
-    productsMicroservicesPort: envVars.PRODUCTS_MICROSERVICE_PORT,
-
+    productsMicroserviceHost: envVars.PRODUCTS_MICROSERVICE_HOST,
+    productsMicroservicePort: envVars.PRODUCTS_MICROSERVICE_PORT,
+  
     ordersMicroserviceHost: envVars.ORDERS_MICROSERVICE_HOST,
     ordersMicroservicePort: envVars.ORDERS_MICROSERVICE_PORT,
+    
+    // natsServers: envVars.NATS_SERVERS,
+
 }
